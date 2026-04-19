@@ -269,7 +269,7 @@ def test_gemini_advisor_disabled_without_key():
 
 
 def test_gemini_advisor_fallback_explanation():
-    """Verify fallback explanation is returned when Gemini is disabled."""
+    """Verify fallback explanation is returned when AI is disabled."""
     with patch.dict("os.environ", {}, clear=True):
         advisor = GeminiAdvisor()
     result = advisor._fallback_explanation(
@@ -281,7 +281,7 @@ def test_gemini_advisor_fallback_explanation():
         available_minutes=120,
     )
     assert "Jordan" in result
-    assert "40" in result  # total minutes
+    assert "40" in result
     assert "120" in result
 
 

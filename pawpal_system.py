@@ -29,7 +29,7 @@ class GeminiAdvisor:
     and answer follow-up pet care questions (agentic reasoning layer).
     """
 
-    MODEL = "gemini-2.0-flash"
+    MODEL = "models/gemini-2.5-flash"
 
     def __init__(self) -> None:
         api_key = os.getenv("GEMINI_API_KEY")
@@ -54,10 +54,6 @@ class GeminiAdvisor:
         excluded_tasks: List[dict],
         preferences: Optional[str] = None,
     ) -> str:
-        """
-        Ask Gemini to explain the generated schedule in plain English,
-        reasoning about why each task was included or excluded.
-        """
         if not self._enabled:
             return self._fallback_explanation(owner_name, scheduled_tasks, available_minutes)
 
@@ -106,10 +102,6 @@ Do not use bullet points — write in natural flowing prose."""
         context: str,
         chat_history: Optional[List[dict]] = None,
     ) -> str:
-        """
-        Answer a follow-up pet care question using the schedule as context.
-        Maintains conversational history for multi-turn chat.
-        """
         if not self._enabled:
             return "AI features are unavailable — please add your GEMINI_API_KEY to the .env file."
 
@@ -117,7 +109,7 @@ Do not use bullet points — write in natural flowing prose."""
         if chat_history:
             history_text = "\n".join(
                 f"{'User' if m['role'] == 'user' else 'Assistant'}: {m['content']}"
-                for m in chat_history[-6:]  # last 3 turns
+                for m in chat_history[-6:]
             )
 
         prompt = f"""You are PawPal+, a friendly and knowledgeable pet care assistant.
@@ -142,7 +134,7 @@ If the question is unrelated to pets or the schedule, politely redirect."""
             logger.info("Gemini answer received (%d chars).", len(result))
             return result
         except Exception as exc:
-            logger.error("Gemini API error during answer_question: %s", exc)
+            logger.error("Anthropic API error during answer_question: %s", exc)
             return "Sorry, I couldn't reach the AI right now. Please try again in a moment."
 
     @staticmethod
